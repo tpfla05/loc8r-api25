@@ -21,7 +21,13 @@ router.get("/kakao/search", async (req, res) => {
 
     res.json(response.data);
   } catch (err) {
-    console.error("Kakao API Error:", err.response?.data || err.message);
+    console.error("Kakao API Error (full):", {
+      data: err.response?.data,
+      status: err.response?.status,
+      headers: err.response?.headers,
+      message: err.message,
+    });
+
     res.status(500).json({ message: "Kakao API request failed" });
   }
 });
