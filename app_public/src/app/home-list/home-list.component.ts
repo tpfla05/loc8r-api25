@@ -24,17 +24,16 @@ export class HomeListComponent implements OnInit {
     this.searchCafes();
   }
 
-  // 기존 HTML: (click)="searchCafes()"
+  // HTML: (click)="searchCafes()"
   searchCafes(): void {
     this.message = '검색 중...';
 
     this.kakaoMapService.searchKeyword(this.searchKeyword)
       .then(data => {
-        // Kakao JS API는 distance, place_url이 없으므로 HTML이 깨지지 않도록 처리
         this.locations = data.map((item: any) => ({
           ...item,
-          distance: item.distance ?? 0,              // distance 없으면 0
-          place_url: item.place_url ?? item.place_url  // JS API는 place_url 없음
+          distance: item.distance ?? 0, // HTML에서 distance 사용하니까 기본값 추가
+          place_url: item.place_url ?? '' // place_url 없을 때 대비
         }));
 
         this.message = '';
