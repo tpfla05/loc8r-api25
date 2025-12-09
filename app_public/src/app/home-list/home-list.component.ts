@@ -10,7 +10,7 @@ import { GeolocationService } from '../geolocation.service';
 export class HomeListComponent implements OnInit {
 
   public keywords: string[] = ['카페', '음식점', '분식', '치킨', '한식', '편의점'];
-  public searchKeyword: string = this.keywords[0];
+  public searchKeyword: string = this.keywords[0]; // HTML: [(ngModel)]="searchKeyword"
 
   public locations: any[] = [];
   public message = '';
@@ -21,7 +21,7 @@ export class HomeListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchCafes();
+    this.searchCafes();  // HTML: 자동 검색 실행
   }
 
   // HTML: (click)="searchCafes()"
@@ -32,8 +32,8 @@ export class HomeListComponent implements OnInit {
       .then(data => {
         this.locations = data.map((item: any) => ({
           ...item,
-          distance: item.distance ?? 0, // HTML에서 distance 사용하니까 기본값 추가
-          place_url: item.place_url ?? '' // place_url 없을 때 대비
+          distance: item.distance ?? 0,    // HTML에서 distance 사용하니까 기본값 넣어줌
+          place_url: item.place_url ?? ''  // place_url 없을 때 대비
         }));
 
         this.message = '';
