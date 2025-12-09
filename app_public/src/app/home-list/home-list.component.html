@@ -1,19 +1,20 @@
 <div class="container mt-3">
     <h2>주변 장소 검색</h2>
-    <div class="input-group mb-3"> <select [(ngModel)]="searchKeyword" class="form-select">
-            <option *ngFor="let kw of keywords" [value]="kw">{{ kw }}</option>
-        </select> <button class="btn btn-primary" (click)="searchCafes()">검색</button> </div>
+
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" [(ngModel)]="keyword">
+        <button class="btn btn-primary" (click)="search()">검색</button>
+    </div>
+
     <p *ngIf="message">{{ message }}</p>
+
     <div *ngIf="locations.length > 0">
-        <div *ngFor="let cafe of locations" class="card mb-2 position-relative">
-            <div class="card-block">
-                <h4> <span class="badge badge-pill badge-default float-end"> {{cafe.distance | distance}} </span>
-                    <h5 class="card-title mb-1"> <a [href]="cafe.place_url" target="_blank">{{ cafe.place_name }}</a>
-                    </h5>
-                    <p class="card-text small mb-0"> <strong>주소:</strong> {{ cafe.road_address_name || cafe.address_name
-                        }}<br> <strong>전화번호:</strong> {{ cafe.phone || '없음' }} </p>
-                </h4>
-            </div>
+        <div *ngFor="let place of locations" class="card mb-2 p-2">
+            <h5>{{ place.place_name }}</h5>
+            <p>
+                <strong>주소:</strong> {{ place.road_address_name || place.address_name }}<br>
+                <strong>전화번호:</strong> {{ place.phone || "없음" }}
+            </p>
         </div>
     </div>
 </div>
