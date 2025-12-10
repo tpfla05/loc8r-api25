@@ -11,15 +11,10 @@ export class NaverSearchService {
 
   constructor(private http: HttpClient) {}
 
-  // 검색
-  search(keyword: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.server}/api/naver/search?query=${keyword}`);
-  }
-
-  // reverse geocode
-  reverse(lat: number, lng: number): Observable<any> {
-    return this.http.get<any>(
-      `${this.server}/api/naver/reverse?lat=${lat}&lng=${lng}`
+  // 🔥 현재 위치 기반Places 검색
+  searchNearby(lat: number, lng: number, keyword: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.server}/api/naver/nearby?lat=${lat}&lng=${lng}&query=${keyword}`
     );
   }
 }
