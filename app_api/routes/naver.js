@@ -2,11 +2,15 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-/* -----------------------------------
-   🔥 현재 위치 기반 장소 검색 (Place API)
------------------------------------- */
+// ----------------------------------------
+// 🔥  네이버 현재 위치 기반 장소 검색 (Place API)
+// ----------------------------------------
 router.get("/nearby", async (req, res) => {
   const { lat, lng, query } = req.query;
+
+  if (!lat || !lng) {
+    return res.status(400).json({ error: "lat,lng required" });
+  }
 
   try {
     const result = await axios.get(
@@ -14,8 +18,8 @@ router.get("/nearby", async (req, res) => {
       {
         params: {
           query: query || "카페",
-          coordinate: `${lng},${lat}`,
-          radius: 2000, // 2km 반경
+          coordinate: `${lng},${lat}`, // ⭐ 네이버는 lng,lat 순서 필수
+          radius: 2000,
           lang: "ko",
         },
         headers: {
@@ -25,10 +29,10 @@ router.get("/nearby", async (req, res) => {
       }
     );
 
-    res.json(result.data.places); //⭐ places 배열만 반환
-  } catch (error) {
-    console.error(error.response?.data || error);
-    res.status(500).send("nearby search error");
+    return res.json(result.data.places); // 성공 응답
+  } catch (err) {
+    console.error("NAVER PLACE ERROR:", err.response?.data || err);
+    return res.status(500).send("naver place api error");
   }
 });
 
