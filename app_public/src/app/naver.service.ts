@@ -7,17 +7,19 @@ import { Observable } from 'rxjs';
 })
 export class NaverSearchService {
 
-  private apiUrl = 'https://loc8r-api25.onrender.com/api/naver/search';
+  private server = "https://loc8r-api25.onrender.com";
 
   constructor(private http: HttpClient) {}
 
-  // 기존 검색
+  // 검색
   search(keyword: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}?query=${keyword}`);
+    return this.http.get<any[]>(`${this.server}/api/naver/search?query=${keyword}`);
   }
 
-  // ⭐ 위치 기반 검색 추가
-  searchByLocation(keyword: string, lat: number, lng: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}?query=${keyword}&lat=${lat}&lng=${lng}`);
+  // reverse geocode
+  reverse(lat: number, lng: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.server}/api/naver/reverse?lat=${lat}&lng=${lng}`
+    );
   }
 }
