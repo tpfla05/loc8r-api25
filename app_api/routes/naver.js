@@ -2,30 +2,22 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
+/* ---------------------------
+   1) 네이버 장소 검색
+---------------------------- */
 router.get("/search", async (req, res) => {
   const query = req.query.query;
-  const lat = req.query.lat;
-  const lng = req.query.lng;
 
   try {
-    const params = {
-      query: query,
-      display: 10,
-      start: 1,
-      sort: "random",
-    };
-
-    // ⭐ 위치가 전달된 경우 → 거리 기준 정렬
-    if (lat && lng) {
-      params.sort = "distance";
-      params.y = lat; // 위도
-      params.x = lng; // 경도
-    }
-
     const result = await axios.get(
       "https://openapi.naver.com/v1/search/local.json",
       {
-        params,
+        params: {
+          query: query,
+          display: 10,
+          start: 1,
+          sort: "random",
+        },
         headers: {
           "X-Naver-Client-Id": process.env.NAVER_CLIENT_ID,
           "X-Naver-Client-Secret": process.env.NAVER_CLIENT_SECRET,
@@ -40,5 +32,32 @@ router.get("/search", async (req, res) => {
   }
 });
 
+/* ---------------------------
+   2) Reverse Geocode
+---------------------------- */
+router.get("/reverse", async (req, res) => {
+  const { lat, lng } = req.query;
+
+  try {
+    const result = await axios.get(
+      "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc",
+      {
+        params: {
+          coords: `${lng},${lat}`,
+          output: "json",
+        },
+        headers: {
+          "X-NCP-APIGW-API-KEY-ID": process.env.NAVER_CLIENT_ID,
+          "X-NCP-APIGW-API-KEY": process.env.NAVER_CLIENT_SECRET,
+        },
+      }
+    );
+
+    res.json(result.data);
+  } catch (e) {
+    console.error(e.response?.data || e);
+    res.status(500).send("reverse geocode error");
+  }
+});
 
 module.exports = router;
