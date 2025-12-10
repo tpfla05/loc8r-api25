@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class NaverSearchService {
 
-  private apiUrl = '/api/naver/search';
+  private apiUrl = 'https://loc8r-api25.onrender.com/api/naver/search';
 
   constructor(private http: HttpClient) {}
 

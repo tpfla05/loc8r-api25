@@ -17,7 +17,7 @@ const naverRouter = require("./app_api/routes/naver");
 const app = express();
 
 /* ------------------------------
-   CORS 설정 (⚠ 꼭 이렇게 해야함)
+   CORS 설정
 -------------------------------- */
 app.use(
   cors({
@@ -27,8 +27,6 @@ app.use(
       "Origin, X-Requested-With, Content-Type, Accept, Authorization",
   })
 );
-
-// OPTIONS(Preflight) 요청 처리
 app.options("*", cors());
 
 /* ------------------------------
@@ -46,15 +44,16 @@ app.use(passport.initialize());
 app.use(express.static(path.join(__dirname, "app_public", "build")));
 
 /* ------------------------------
-   API 라우터
+   API 라우터 (⚠ 반드시 SPA 라우팅보다 위에 있어야 함)
 -------------------------------- */
 app.use("/api/naver", naverRouter);
 app.use("/api", apiRouter);
 
 /* ------------------------------
    Angular SPA 라우팅 처리
+   ⚠ /api 로 시작하는 요청은 제외해야 함!
 -------------------------------- */
-app.get("*", (req, res) => {
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "app_public", "build", "index.html"));
 });
 
