@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KakaoMapService } from '../kakao-map.service';
-import { GeolocationService } from '../geolocation.service';
+import { NaverSearchService } from '../naver.service';
 
 @Component({
   selector: 'app-home-list',
@@ -9,39 +8,28 @@ import { GeolocationService } from '../geolocation.service';
 })
 export class HomeListComponent implements OnInit {
 
-  public keywords: string[] = ['카페', '음식점', '분식', '치킨', '한식', '편의점'];
-  public searchKeyword: string = this.keywords[0]; // HTML: [(ngModel)]="searchKeyword"
-
+  public keyword = '카페';
   public locations: any[] = [];
   public message = '';
 
-  constructor(
-    private kakaoMapService: KakaoMapService,
-    private geolocationService: GeolocationService
-  ) {}
+  constructor(private naverSearch: NaverSearchService) {}
 
   ngOnInit(): void {
-    this.searchCafes();  // HTML: 자동 검색 실행
+    this.search();
   }
 
-  // HTML: (click)="searchCafes()"
-  searchCafes(): void {
+  search(): void {
     this.message = '검색 중...';
 
-    this.kakaoMapService.searchKeyword(this.searchKeyword)
-      .then(data => {
-        this.locations = data.map((item: any) => ({
-          ...item,
-          distance: item.distance ?? 0,    // HTML에서 distance 사용하니까 기본값 넣어줌
-          place_url: item.place_url ?? ''  // place_url 없을 때 대비
-        }));
-
+    this.naverSearch.search(this.keyword).subscribe({
+      next: data => {
+        this.locations = data;
         this.message = '';
-      })
-      .catch(err => {
+      },
+      error: err => {
         console.error(err);
         this.message = '검색 결과가 없습니다.';
-        this.locations = [];
-      });
+      }
+    });
   }
 }

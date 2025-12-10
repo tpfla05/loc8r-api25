@@ -24,8 +24,8 @@ router.get("/search", async (req, res) => {
 
     res.json(result.data.items);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Naver API error");
+    console.error("NAVER API ERROR:", error.response?.data || error.message);
+    res.status(500).json({ error: error.response?.data || error.message });
   }
 });
 
